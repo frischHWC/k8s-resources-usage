@@ -1,0 +1,17 @@
+= Get k8s Resources Usage
+
+This script get and make the sum of all resources: CPU/Mem/PVC of all pods of a namespace. 
+
+It gets limits and requests.
+
+== Prerequisites
+
+Have kubectl command installed and configured to reach your kubernetes cluster
+
+== Usage
+
+Launch the script passing as argument the name of namespace to which you want to get resources limits and requests.
+
+
+
+
