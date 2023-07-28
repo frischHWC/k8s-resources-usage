@@ -14,4 +14,13 @@ Launch the script passing as argument the name of namespace to which you want to
 
 
 
+Example Usage and output:
 
+        ./compute_k8s_resources.sh cdp
+        
+        Sum of all CPU requests: 4527 m
+        Sum of all Memory requests: 19056 MiB
+        Sum of all PVC requests: 64 GiB
+        Sum of all CPU limits: 8850 m
+        Sum of all Memory limits: 67632 MiB
+        Sum of all PVC limits: 0 GiB
