@@ -4,6 +4,12 @@ echo ""
 echo "REQUESTS FOREACH POD: "
 echo ""
 
+out_file_reqs="./output_reqs.csv"
+out_file_lims="./output_lims.csv"
+echo "name,cpu_milli,memory_mb,pvc_gb" > $out_file_reqs
+echo "name,cpu_milli,memory_mb" > $out_file_lims
+
+
 res_pods=$(kubectl -n $1 get pods -o=jsonpath='{.items[*]..metadata.name}')
 
 
@@ -40,7 +46,29 @@ do
     done
 
     echo "      MEMORY: $tot_mem MB"
-    
+
+    res_pvc=$(kubectl -n $1 get pod "$i" -o=jsonpath='{..resources.requests.storage}')
+    let tot_pvc=0
+    for p in $res_pvc
+    do
+        if [[ $p =~ "G" ]] || [[ $p =~ "g" ]]
+        then
+        p=$(echo $p | sed 's/[^0-9]*//g')
+        tot_pvc=$(( tot_pvc + p ))
+        elif [[ $i =~ "M" ]] || [[ $i =~ "m" ]]
+        then
+        p=$(echo $p | sed 's/[^0-9]*//g')
+        tot_pvc=$(( tot_pvc + p/1000 ))
+        else
+        p=$(echo $p | sed 's/[^0-9]*//g')
+        tot_pvc=$(( tot_pvc + p*1000 ))
+        fi
+    done
+
+    echo "      STORAGE: $tot_pvc GB"
+
+    echo "${i},${tot_cpu},${tot_mem},${tot_pvc}" >> $out_file_reqs
+
     echo ""
 
 done
@@ -84,5 +112,7 @@ do
     echo "      MEMORY: $tot_mem MB"
     
     echo ""
+
+    echo "${i},${tot_cpu},${tot_mem}" >> $out_file_lims
 
 done
